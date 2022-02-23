@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 08:43:53
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 09:37:10
 )Subtract, Version 2         (AddSub2.asm		     Page 1 - 1
 
 
@@ -28,7 +28,7 @@ Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 08:43:53
 
  00000000			.data
 
- 00000000  00000064 [			FIBNum    DWORD 100 DUP(?)
+ 00000000  0000001E [			FIBNum    DWORD 30 DUP(0)
 	    00000000
 	   ]
 
@@ -36,20 +36,37 @@ Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 08:43:53
  00000000			.code
  00000000			main PROC
 
- 00000000  BE 00000000 R		mov esi, OFFSET FIBNum
- 00000005  C7 05 00000000 R		mov FIBNum, 1
+ 00000000  C7 05 00000000 R		mov  FIBNum, 1
 	   00000001
- 0000000F  C7 05 00000004 R		mov FIBNum+4, 1
+ 0000000A  C7 05 00000004 R		mov  FIBNum+4, 1
 	   00000001
- 00000019  66| 8B 46 04			mov ax, [esi+4]
- 0000001D  E8 00000000 E		call	DumpRegs			; display the registers
+ 00000014  B9 0000001C			mov  ecx, 28
+ 00000019  BB 00000000			mov  ebx, 0
+ 0000001E  BE 00000000			mov  esi, 0
+
+ 00000023  B8 00000001			mov  eax, 1
+ 00000028  E8 00000000 E		call WriteInt
+ 0000002D  E8 00000000 E		call CRLF
+ 00000032  E8 00000000 E		call WriteInt
+ 00000037  E8 00000000 E		call CRLF
+
+ 0000003C			L1:
+ 0000003C  03 9E 00000004 R		add  ebx, [FIBNum + 4 + esi]
+ 00000042  03 9E 00000000 R		add  ebx, [FIBNum + esi]
+ 00000048  89 9E 00000008 R		mov  FIBNum[8 + esi], ebx
+ 0000004E  8B C3			mov  eax, ebx
+ 00000050  E8 00000000 E		call WriteInt 					; print out
+ 00000055  E8 00000000 E		call CRLF						; \n
+ 0000005A  33 DB			xor  ebx, ebx
+ 0000005C  83 C6 04			add  esi, 4
+ 0000005F  E2 DB			loop L1
 
 					exit
- 00000022  6A 00	   *	    push   +000000000h
- 00000024  E8 00000000 E   *	    call   ExitProcess
- 00000029			main ENDP
+ 00000061  6A 00	   *	    push   +000000000h
+ 00000063  E8 00000000 E   *	    call   ExitProcess
+ 00000068			main ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 08:43:53
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    02/23/22 09:37:10
 )Subtract, Version 2         (AddSub2.asm		     Symbols 2 - 1
 
 
@@ -143,8 +160,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000190 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000029 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000078 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000068 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -251,7 +268,8 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000029 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000068 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 0000003C _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
